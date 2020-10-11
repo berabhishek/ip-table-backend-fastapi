@@ -2,36 +2,23 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+class CountryBase(BaseModel):
+    name:str
 
-class ItemBase(BaseModel):
-    title: str
-    description: Optional[str] = None
-
-
-class ItemCreate(ItemBase):
+class CountryCreate(CountryBase):
     pass
 
-
-class Item(ItemBase):
-    id: int
-    owner_id: int
-
+class Country(CountryBase):
     class Config:
         orm_mode = True
 
+class CityBase(BaseModel):
+    name: str
+    country: str
 
-class UserBase(BaseModel):
-    email: str
+class CityCreate(CityBase):
+    pass
 
-
-class UserCreate(UserBase):
-    password: str
-
-
-class User(UserBase):
-    id: int
-    is_active: bool
-    items: List[Item] = []
-
+class City(CityBase):
     class Config:
         orm_mode = True
