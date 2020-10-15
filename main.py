@@ -1,4 +1,5 @@
 from typing import List
+import uvicorn
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
@@ -50,7 +51,10 @@ def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
     return crud.create_city(db=db, city=city)
 
 @app.get("/formhelper/state/{country}")
-def get_city(country: str):
-    return {
-        "state": ["Hyd", "Bangalore", "padma", country]
-    }
+def get_city_name(country: str, db: Session = Depends(get_db)):
+    return crud.get_city(country, db=db)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=3030)
+
+#blabla
