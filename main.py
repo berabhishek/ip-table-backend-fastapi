@@ -37,7 +37,7 @@ def get_db():
 def create_region(region: schemas.RegionCreate, db: Session = Depends(get_db)):
     return crud.create_region(db=db, region=region)
 
-@app.get("/formhelper/region{region}", response_model =List[schemas.Region])
+@app.get("/formhelper/region/{region}", response_model =List[schemas.Region])
 def get_region(db: Session = Depends(get_db)):
     return crud.get_region(db=db)
 
@@ -50,7 +50,7 @@ def create_country(country: schemas.CountryCreate, db: Session = Depends(get_db)
 def get_country(db: Session = Depends(get_db)):
     return crud.get_country(db=db)
 
-@app.get("/formhelper/city/{city}", response_model=List[schemas.City])
+@app.get("/formhelper/state/{city}", response_model=List[schemas.City])
 def get_city_name(city: str, db: Session = Depends(get_db)):
     return crud.get_city(city, db=db)
 
@@ -63,6 +63,6 @@ def get_city_name(country: str, db: Session = Depends(get_db)):
     return crud.get_city(country, db=db)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=3030)
+    uvicorn.run(app, port=3030)
 
 #blabla
