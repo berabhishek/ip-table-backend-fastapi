@@ -33,6 +33,14 @@ def get_db():
     finally:
         db.close()
 
+@app.post("/formhelper/region", response_model=schemas.Region)
+def create_region(region: schemas.RegionCreate, db: Session = Depends(get_db)):
+    return crud.create_region(db=db, region=region)
+
+@app.get("/formhelper/region{region}", response_model =List[schemas.Region])
+def get_region(db: Session = Depends(get_db)):
+    return crud.get_region(db=db)
+
 
 @app.post("/formhelper/country", response_model=schemas.Country)
 def create_country(country: schemas.CountryCreate, db: Session = Depends(get_db)):

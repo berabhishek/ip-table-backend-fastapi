@@ -20,7 +20,7 @@ def create_country(db: Session, country: schemas.CountryCreate):
     return db_item
 
 def get_country(db: Session):
-    return db.query(models.Country).filters(models.Country.region == region)all()
+    return db.query(models.Country).filters(models.Country.region == region).all()
 
 def create_city(db:Session, city: schemas.CityCreate):
     db_item = models.City(**city.dict())
