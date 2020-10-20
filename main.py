@@ -50,17 +50,21 @@ def create_country(country: schemas.CountryCreate, db: Session = Depends(get_db)
 def get_country(db: Session = Depends(get_db)):
     return crud.get_country(db=db)
 
-@app.get("/formhelper/state/{city}", response_model=List[schemas.City])
-def get_city_name(city: str, db: Session = Depends(get_db)):
-    return crud.get_city(city, db=db)
-
 @app.post("/formhelper/city", response_model=schemas.City)
 def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
     return crud.create_city(db=db, city=city)
 
-@app.get("/formhelper/state/{country}")
+@app.get("/formhelper/city/{country}")
 def get_city_name(country: str, db: Session = Depends(get_db)):
     return crud.get_city(country, db=db)
+
+@app.post("/formhelper/facility", response_model=schemas.Facility)
+def create_facility(facility: schemas.FacilityCreate, db: Session = Depends(get_db)):
+    return crud.create_facility(db=db, facility=facility)
+
+@app.get("/formhelper/facility/{city}")
+def get_facility_name(city: str, db: Session = Depends(get_db)):
+    return crud.get_facility(city, db=db)
 
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)

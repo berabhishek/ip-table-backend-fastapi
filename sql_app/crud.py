@@ -39,5 +39,5 @@ def create_facility(db: Session, facility: schemas.FacilityCreate):
     db.refresh(db_item)
     return db_item
 
-def get_facility(db: Session):
-    return db.query(models.Facility).filters(models.Facility.city == city).all()
+def get_facility(city: str, db: Session):
+    return db.query(models.Facility).filter(models.Facility.city == city).all()
