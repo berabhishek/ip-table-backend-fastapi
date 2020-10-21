@@ -45,3 +45,36 @@ class FacilityCreate(FacilityBase):
 class Facility(FacilityBase):
     class Config:
         orm_mode = True
+
+
+class ConnectionBase(BaseModel):
+    name: str
+
+class ConnectionCreate(ConnectionBase):
+    pass
+
+class Connection(ConnectionBase):
+    class Config:
+        orm_mode = True
+
+class Device1Base(BaseModel):
+    name : str
+    connection : str
+
+class Device1Create(Device1Base):
+    pass
+
+class Device1(Device1Base):
+    class Config:
+        orm_mode = True
+
+class Device2Base(BaseModel):
+    name : str
+    connection : str
+
+class Device2Create(Device2Base):
+    pass
+
+class Device2(Device2Base):
+    class Config:
+        orm_mode = True

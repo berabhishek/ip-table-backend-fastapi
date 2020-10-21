@@ -29,7 +29,24 @@ class Facility(Base):
 
     city = Column(String, ForeignKey("city.name"))
 
+class Connection(Base):
+    __tablename__ = "connection"
 
+    name = Column(String, primary_key=True)
+
+class Device1(Base):
+    __tablename__= "device1"
+
+    name = Column(String, primary_key=True)
+
+    connection = Column(String, ForeignKey("connection.name"))
+
+class Device2(Base):
+    __tablename__= "device2"
+
+    name = Column(String, primary_key=True)
+
+    connection = Column(String, ForeignKey("connection.name"))
 
    
 
