@@ -37,7 +37,7 @@ def get_db():
 def create_region(region: schemas.RegionCreate, db: Session = Depends(get_db)):
     return crud.create_region(db=db, region=region)
 
-@app.get("/formhelper/region/{region}", response_model =List[schemas.Region])
+@app.get("/formhelper/region", response_model =List[schemas.Region])
 def get_region(db: Session = Depends(get_db)):
     return crud.get_region(db=db)
 
