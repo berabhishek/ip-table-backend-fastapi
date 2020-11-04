@@ -78,3 +78,92 @@ class Device2Create(Device2Base):
 class Device2(Device2Base):
     class Config:
         orm_mode = True
+
+class AsnumberBase(BaseModel):
+    name : str
+    facility : str
+
+class AsnumberCreate(AsnumberBase):
+    pass
+
+class Asnumber(AsnumberBase):
+    class Config:
+        orm_mode = True
+
+class VlanBase(BaseModel):
+    facility : str
+    vlanmax : int
+    vlanmin : int
+
+class VlanCreate(VlanBase):
+    pass
+
+class Vlan(VlanBase):
+    class Config:
+        orm_mode = True
+
+class ParentsubnetBase(BaseModel):
+    facility : str
+    parentsubnet : str
+
+class ParentsubnetCreate(ParentsubnetBase):
+    pass
+
+class Parentsubnet(ParentsubnetBase):
+    class Config:
+        orm_mode = True
+
+class SubnetBase(BaseModel):
+    subnetchild : str
+    parentsubnet : str
+
+class SubnetCreate(SubnetBase):
+    pass
+
+class Subnet(SubnetBase):
+    class Config:
+        orm_mode = True
+
+class ProjectBase(BaseModel):
+    projectid : str
+    projectname : str
+    vrfname : str
+    facility : str
+
+class ProjectCreate(ProjectBase):
+    pass
+
+class Project(ProjectBase):
+    class Config:
+        orm_mode = True
+
+
+class ConnectBase(BaseModel):
+    vlan : int
+    subnetchild : str
+    device1 : str
+    device2 : str
+
+class ConnectCreate(ConnectBase):
+    pass
+
+class Connect(ConnectBase):
+    id : int
+    class Config:
+        orm_mode = True
+
+class IptableBase(BaseModel):
+    projectid : str
+    connection : str
+    connect1 : int
+    connect2 : int
+    connect3 : int 
+    connect4 : int
+
+class IptableCreate(IptableBase):
+    pass
+
+class Iptable(IptableBase):
+    id : int
+    class Config:
+        orm_mode = True

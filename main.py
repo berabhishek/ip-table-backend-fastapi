@@ -41,7 +41,6 @@ def create_region(region: schemas.RegionCreate, db: Session = Depends(get_db)):
 def get_region(db: Session = Depends(get_db)):
     return crud.get_region(db=db)
 
-
 @app.post("/formhelper/country", response_model=schemas.Country)
 def create_country(country: schemas.CountryCreate, db: Session = Depends(get_db)):
     return crud.create_country(db=db, country=country)
@@ -54,25 +53,23 @@ def get_country(region: str, db: Session = Depends(get_db)):
 def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
     return crud.create_city(db=db, city=city)
 
-@app.get("/formhelper/city/{country}")
+@app.get("/formhelper/city/{country}", response_model =List[schemas.City])
 def get_city_name(country: str, db: Session = Depends(get_db)):
     return crud.get_city(country, db=db)
-
-
-
-@app.get("/formhelper/facility/{city}")
-def get_facility_name(city: str, db: Session = Depends(get_db)):
-    return crud.get_facility(city, db=db)
 
 @app.post("/formhelper/facility", response_model=schemas.Facility)
 def create_facility(facility: schemas.FacilityCreate, db: Session = Depends(get_db)):
     return crud.create_facility(db=db, facility=facility)
 
+@app.get("/formhelper/facility/{city}", response_model =List[schemas.Facility])
+def get_facility_name(city: str, db: Session = Depends(get_db)):
+    return crud.get_facility(city, db=db)
+
 @app.post("/formhelper/connection", response_model=schemas.Connection)
 def create_connection(connection: schemas.ConnectionCreate, db: Session = Depends(get_db)):
     return crud.create_connection(db=db, connection=connection)
 
-@app.get("/formhelper/connection")
+@app.get("/formhelper/connection", response_model =List[schemas.Connection])
 def get_connection_name(db: Session = Depends(get_db)):
     return crud.get_connection(db=db)
 
@@ -80,7 +77,7 @@ def get_connection_name(db: Session = Depends(get_db)):
 def create_device1(device1: schemas.Device1Create, db: Session = Depends(get_db)):
     return crud.create_device1(db=db, device1 = device1)
 
-@app.get("/formhelper/device1/{connection}")
+@app.get("/formhelper/device1/{connection}", response_model =List[schemas.Device1])
 def get_device1(connection: str, db: Session = Depends(get_db)):
     return crud.get_device1(connection, db=db)
 
@@ -88,11 +85,86 @@ def get_device1(connection: str, db: Session = Depends(get_db)):
 def create_device2(device2: schemas.Device2Create, db: Session = Depends(get_db)):
     return crud.create_device2(db=db, device2 = device2)
 
-@app.get("/formhelper/device2/{connection}")
+@app.get("/formhelper/device2/{connection}", response_model =List[schemas.Device2])
 def get_device2(connection: str, db: Session = Depends(get_db)):
     return crud.get_device2(connection, db=db)
 
+@app.post("/formhelper/asnumber", response_model=schemas.Asnumber)
+def create_asnumber(asnumber: schemas.AsnumberCreate, db: Session = Depends(get_db)):
+    return crud.create_asnumber(db=db, asnumber = asnumber)
 
+@app.get("/formhelper/asnumber/{facility}", response_model =List[schemas.Asnumber])
+def get_asnumber(facility: str, db: Session = Depends(get_db)):
+    return crud.get_asnumber(facility, db=db)
+
+@app.post("/formhelper/vlan", response_model=schemas.Vlan)
+def create_vlan(vlan: schemas.VlanCreate, db: Session = Depends(get_db)):
+    return crud.create_vlan(db=db, vlan = vlan)
+
+@app.get("/formhelper/vlan/{facility}", response_model =List[schemas.Vlan])
+def get_vlan(facility: str, db: Session = Depends(get_db)):
+    return crud.get_vlan(facility, db=db)
+
+@app.post("/formhelper/parentsubnet", response_model=schemas.Parentsubnet)
+def create_parentsubnet(parentsubnet: schemas.ParentsubnetCreate, db: Session = Depends(get_db)):
+    return crud.create_parentsubnet(db=db, parentsubnet = parentsubnet)
+
+@app.get("/formhelper/parentsubnet/{facility}", response_model =schemas.Parentsubnet)
+def get_parentsubnet(facility: str, db: Session = Depends(get_db)):
+    return crud.get_parentsubnet(facility, db=db)
+
+@app.post("/formhelper/subnet", response_model=schemas.Subnet)
+def create_subnet(subnet: schemas.SubnetCreate, db: Session = Depends(get_db)):
+    return crud.create_subnet(db=db, subnet = subnet)
+
+@app.get("/formhelper/subnet/{parentsubnet}/{entervalue}", response_model =List[schemas.Subnet])
+def get_subnet(parentsubnet: str, entervalue: str, db: Session = Depends(get_db)):
+    return crud.get_subnet(parentsubnet , entervalue, db=db)
+
+@app.post("/formhelper/project", response_model=schemas.Project)
+def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)):
+    return crud.create_project(db=db, project = project)
+
+# @app.get("/formhelper/projectipdata/{id}",response_model = schemas.Projectipdata)
+# def get_projectipdata(id: int, db: Session = Depends(get_db)):
+#     return crud.get_projectipdata(id, db=db)
+
+@app.post("/formhelper/setipdata/existing")
+def create_projectipdata(projectipdata: dict, db: Session = Depends(get_db)):
+    return crud.create_projectipdata(db=db, projectipdata = projectipdata)
+
+
+@app.get("/formhelper/getvlans/{facility}")
+def get_vlans(facility: str, db: Session = Depends(get_db)):
+    return crud.get_free_vlan(facility, db=db)
+
+@app.get("/formhelper/vrfname")
+def get_vrfnames(db: Session = Depends(get_db)):
+    return crud.get_vrfnames(db=db)
+
+@app.get("/formhelper/validate/{projectname}/{projectid}/{vrfname}")
+def get_project(projectname: str, projectid: str, vrfname: str, db:Session = Depends(get_db)):
+    return crud.check_project_validity(projectname, projectid, vrfname, db=db)
+
+@app.post("/formhelper/connect", response_model=schemas.Connect)
+def create_connect(connect: schemas.ConnectCreate, db: Session = Depends(get_db)):
+    return crud.create_connect(db=db, connect = connect)
+
+@app.get("/formhelper/connect/{id}",response_model = schemas.Connect)
+def get_connect(id: int, db: Session = Depends(get_db)):
+    return crud.get_connect(id, db=db)
+
+@app.get("/formhelper/connect/all",response_model = List[schemas.Connect])
+def get_all_connect( db: Session = Depends(get_db)):
+    return crud.get_all_connect(db=db)
+
+@app.get("/formhelper/iptable/{id}",response_model = schemas.Iptable)
+def get_iptable(id: int, db: Session = Depends(get_db)):
+    return crud.get_iptable(id, db=db)
+
+@app.get("/formhelper/alldata/{id}")
+def get_output_data(id: int, db: Session = Depends(get_db)):
+    return crud.get_output_data(id, db = db)
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)
 
