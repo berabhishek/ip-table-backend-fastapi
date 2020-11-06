@@ -92,8 +92,8 @@ class Asnumber(AsnumberBase):
 
 class VlanBase(BaseModel):
     facility : str
-    vlanmax : int
     vlanmin : int
+    vlanmax : int
 
 class VlanCreate(VlanBase):
     pass
@@ -103,8 +103,9 @@ class Vlan(VlanBase):
         orm_mode = True
 
 class ParentsubnetBase(BaseModel):
-    facility : str
     parentsubnet : str
+    facility : str
+    
 
 class ParentsubnetCreate(ParentsubnetBase):
     pass
@@ -114,7 +115,7 @@ class Parentsubnet(ParentsubnetBase):
         orm_mode = True
 
 class SubnetBase(BaseModel):
-    subnetchild : str
+    childsubnet : str
     parentsubnet : str
 
 class SubnetCreate(SubnetBase):
@@ -140,7 +141,7 @@ class Project(ProjectBase):
 
 class ConnectBase(BaseModel):
     vlan : int
-    subnetchild : str
+    childsubnet : str
     device1 : str
     device2 : str
 

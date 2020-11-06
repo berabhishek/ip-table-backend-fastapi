@@ -58,9 +58,9 @@ class Asnumber(Base):
 class Vlan(Base):
     __tablename__="vlan"
 
-    vlanmax = Column(Integer)
     vlanmin = Column(Integer)
-    id = Column(Integer, primary_key=True, index=True)#added autofeild for unique key
+    vlanmax = Column(Integer)
+    id = Column(Integer, primary_key=True, index=True)
 
     facility = Column(String, ForeignKey("facility.name"))
 
@@ -74,7 +74,7 @@ class Parentsubnet(Base):
 class Subnet(Base):
     __tablename__="subnet"
 
-    subnetchild = Column(String, primary_key=True)
+    childsubnet = Column(String, primary_key=True)
 
     parentsubnet = Column(String, ForeignKey("parentsubnet.parentsubnet"))
 
@@ -93,7 +93,7 @@ class Connect(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     vlan = Column(Integer, unique=True)
-    subnetchild = Column(String, ForeignKey("subnet.subnetchild"))
+    childsubnet = Column(String, ForeignKey("subnet.childsubnet"))
     device1 = Column(String, ForeignKey("device1.name"))
     device2 = Column(String, ForeignKey("device2.name"))
 

@@ -125,22 +125,17 @@ def get_subnet(parentsubnet: str, entervalue: str, db: Session = Depends(get_db)
 def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)):
     return crud.create_project(db=db, project = project)
 
-# @app.get("/formhelper/projectipdata/{id}",response_model = schemas.Projectipdata)
-# def get_projectipdata(id: int, db: Session = Depends(get_db)):
-#     return crud.get_projectipdata(id, db=db)
-
 @app.post("/formhelper/setipdata/existing")
 def create_projectipdata(projectipdata: dict, db: Session = Depends(get_db)):
     return crud.create_projectipdata(db=db, projectipdata = projectipdata)
 
-
-@app.get("/formhelper/getvlans/{facility}")
+@app.get("/formhelper/get_free_vlans/{facility}")
 def get_vlans(facility: str, db: Session = Depends(get_db)):
     return crud.get_free_vlan(facility, db=db)
 
-@app.get("/formhelper/vrfname")
-def get_vrfnames(db: Session = Depends(get_db)):
-    return crud.get_vrfnames(db=db)
+# @app.get("/formhelper/vrfname")
+# def get_vrfnames(db: Session = Depends(get_db)):
+#     return crud.get_vrfnames(db=db)
 
 @app.get("/formhelper/validate/{projectname}/{projectid}/{vrfname}")
 def get_project(projectname: str, projectid: str, vrfname: str, db:Session = Depends(get_db)):
@@ -165,7 +160,6 @@ def get_iptable(id: int, db: Session = Depends(get_db)):
 @app.get("/formhelper/alldata/{id}")
 def get_output_data(id: int, db: Session = Depends(get_db)):
     return crud.get_output_data(id, db = db)
+
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)
-
-#blabla

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from . import models, schemas #change style guide , apply DRY
+from . import models, schemas
 
 def  insert_into_model(db: Session, row_object, model):
     try:
@@ -22,7 +22,6 @@ def get_free_vlan(facility: str, db: Session):
     used_vlans = []
     for u in used:
         used_vlans.append(u.__dict__["vlan"])
-    print(used_vlans)
     free_vlans = []
     for vlan in range(vmin, vmax+1):
         if len(free_vlans) == 4:
@@ -31,13 +30,7 @@ def get_free_vlan(facility: str, db: Session):
             free_vlans.append(vlan)
     return free_vlans
 
-# def get_projectdetails(facility: str, db:Session):
-#     fetch_details = db.query(models.Project).filter(models.Project.facility == facility).first()
-#     projectid = fetch_details.__dict__["projectid"]
-#     projectname = fetch_details.__dict__["projectname"]
-#     vrfname = fetch_details.__dict__["vrfname"]
-
-#     details = db.query(models.Project).filter((models.Project.projectid)).filter((models.Project.projectname)).filter((models.Project.vrfname)).all()
+     details = db.query(models.Project).filter((models.Project.projectid)).filter((models.Project.projectname)).filter((models.Project.vrfname)).all()
 def get_vrfnames(db: Session):
     vrfnames = []
     for vrf in db.query(models.Project).all():
@@ -116,27 +109,8 @@ def create_subnet(db: Session, subnet: schemas.SubnetCreate):
     return insert_into_model(db, subnet, models.Subnet)
 
 def get_subnet(parentsubnet:str , entervalue: str,  db:Session):
-    # parentsubnet = parentsubnet.replace("%2F", "/")
-    # print(parentsubnet)
     parentsubnet += "/"+entervalue
     return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parentsubnet).all()
-
-# def get_childsubnet(parentsubnet:str , db:Session):
-#     ipsubnet = db.query(models.Subnet).filter(models.Subnet.parentsubnet==parentsubnet).first()
-#     subnetchild = ipsubnet.__dict__["subnetchild"]
-
-#     used = db.query(models.Connect).filter((models.Connect.subnetchild in parentsubnet)).all()
-#     used_subnets = []
-#     for u in used:
-#         used_subnets.append(u.__dict__["subnet"])
-#     print(used_subnets)
-#     free_subnets = []
-#     for subnetchild in parentsubnet:
-#         if len(free_subnets) == 4:
-#             return free_subnets
-#         if subnetchild not in used_subnets:
-#             free_subnets.append(subnetchild)
-#     return free_subnets
 
 def create_project(db: Session, project: schemas.ProjectCreate):
     return insert_into_model(db, project, models.Project)
@@ -148,14 +122,12 @@ def create_projectipdata(db: Session, projectipdata: dict):
         if(projectipdata['device1_'+istr] != '' and projectipdata['device2_'+istr] != ''):
             connect_schema = {}
             connect_schema['vlan'] = int(projectipdata['vlan_'+istr])
-            connect_schema['subnetchild'] = projectipdata['subnet_'+istr]
+            connect_schema['childsubnet'] = projectipdata['subnet_'+istr]
             connect_schema['device1'] = projectipdata['device1_'+istr]
             connect_schema['device2'] = projectipdata['device2_'+istr]
-            print(connect_schema)
             connectids.append(insert_into_model(db, connect_schema, models.Connect))
         else:
             connectids.append(None)
-    print(connectids)
     iptable_schema = {}
     iptable_schema['projectid'] = projectipdata['projectid']
     iptable_schema['connection'] = projectipdata['connectivitytype']
@@ -165,9 +137,6 @@ def create_projectipdata(db: Session, projectipdata: dict):
         else:
             iptable_schema['connect'+str(i+1)] = -1
     return insert_into_model(db, iptable_schema, models.Iptable)
-
-# def get_projectipdata(id : int, db: Session):
-#     return db.query(models.Projectipdata).filter(models.Projectipdata.id == id).first()
 
 def create_connect(db: Session, connect: schemas.ConnectCreate):
     return insert_into_model(db, connect, models.Connect)
@@ -209,7 +178,7 @@ def get_output_data(id : int, db: Session):
                     inp[key] = connections[i].__dict__[key]
                 except:
                     inp[key] = ""
-                inp["subnet"], inp["entervalue"] = connections[i].__dict__["subnetchild"].split("/")
+                inp["subnet"], inp["entervalue"] = connections[i].__dict__["childsubnet"].split("/")
         else :
             for key in keys:
                 inp[key] = ""
