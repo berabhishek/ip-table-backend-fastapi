@@ -133,10 +133,6 @@ def create_projectipdata(projectipdata: dict, db: Session = Depends(get_db)):
 def get_vlans(facility: str, db: Session = Depends(get_db)):
     return crud.get_free_vlan(facility, db=db)
 
-# @app.get("/formhelper/vrfname")
-# def get_vrfnames(db: Session = Depends(get_db)):
-#     return crud.get_vrfnames(db=db)
-
 @app.get("/formhelper/validate/{projectname}/{projectid}/{vrfname}")
 def get_project(projectname: str, projectid: str, vrfname: str, db:Session = Depends(get_db)):
     return crud.check_project_validity(projectname, projectid, vrfname, db=db)
@@ -160,6 +156,10 @@ def get_iptable(id: int, db: Session = Depends(get_db)):
 @app.get("/formhelper/alldata/{id}")
 def get_output_data(id: int, db: Session = Depends(get_db)):
     return crud.get_output_data(id, db = db)
+
+@app.delete("/formhelper/iptable/{id}")
+def delete_iptable(id: int, db: Session = Depends(get_db)):
+    return crud.delete_iptable(id, db = db)
 
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)
