@@ -30,7 +30,8 @@ def get_free_vlan(facility: str, db: Session):
             free_vlans.append(vlan)
     return free_vlans
 
-     details = db.query(models.Project).filter((models.Project.projectid)).filter((models.Project.projectname)).filter((models.Project.vrfname)).all()
+    details = db.query(models.Project).filter((models.Project.projectid)).filter((models.Project.projectname)).filter((models.Project.vrfname)).all()
+
 def get_vrfnames(db: Session):
     vrfnames = []
     for vrf in db.query(models.Project).all():
@@ -149,6 +150,11 @@ def get_all_connect(db: Session):
 
 def get_iptable(id: int , db:Session):
     return db.query(models.Iptable).filter(models.Iptable.id==id).first()
+
+def delete_iptable(id: int, db: Session):
+    status = db.query(models.Iptable).filter(models.Iptable.id == id).delete()
+    db.commit()
+    return status
 
 def get_output_data(id : int, db: Session):
     iptable = db.query(models.Iptable).filter(models.Iptable.id == id).first()
