@@ -146,7 +146,7 @@ def create_connect(db: Session, connect: schemas.ConnectCreate):
 def get_connect(id: int , db:Session):
     return db.query(models.Connect).filter(models.Connect.id==id).first()
 
-def get_all_connect(db: Session):
+def get_all_connect(db):
     return db.query(models.Connect).all()
 
 def get_iptable(id: int , db:Session):
@@ -212,3 +212,10 @@ def delete_project_id(projectname, projectid, vrfname, facility, db):
     print(proj_id)
     ip_entry = db.query(models.Iptable).filter(models.Iptable.projectid == proj_id).first()
     return delete_iptable(ip_entry.__dict__["id"])
+
+
+
+def delete_all_connections(db):
+    status = db.query(models.Connect).delete()
+    db.commit()
+    return status

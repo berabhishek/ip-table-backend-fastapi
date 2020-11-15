@@ -149,13 +149,13 @@ def create_connect(connect: schemas.ConnectCreate, db: Session = Depends(get_db)
 def get_connect(id: int, db: Session = Depends(get_db)):
     return crud.get_connect(id, db=db)
 
-@app.get("/formhelper/connect/all",response_model = List[schemas.Connect])
-def get_all_connect( db: Session = Depends(get_db)):
-    return crud.get_all_connect(db=db)
-
 @app.get("/formhelper/iptable/{id}",response_model = schemas.Iptable)
 def get_iptable(id: int, db: Session = Depends(get_db)):
     return crud.get_iptable(id, db=db)
+
+@app.get("/all")
+def get_all_someting(db: Session = Depends(get_db)):
+    return crud.get_all_connect(db)
 
 @app.get("/formhelper/alldata/{id}")
 def get_output_data(id: int, db: Session = Depends(get_db)):
@@ -169,5 +169,11 @@ def delete_iptable(id: int, db: Session = Depends(get_db)):
 def delete_project_id(projectname: str, projectid: str, vrfname: str, facility: str, db: Session = Depends(get_db)):
     return crud.delete_project_id(projectname, projectid, vrfname, facility, db = db)
 
+
+"""Start all the internal endpoints with internals start case """
+
+@app.delete("/internals/clearconnection")
+def delete_all_connections(db: Session = Depends(get_db)):
+    return crud.delete_all_connections(db=db)
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)
