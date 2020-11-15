@@ -165,5 +165,9 @@ def get_output_data(id: int, db: Session = Depends(get_db)):
 def delete_iptable(id: int, db: Session = Depends(get_db)):
     return crud.delete_iptable(id, db = db)
 
+@app.delete("/formhelper/cleariptable/{projectname}/{projectid}/{vrfname}/{facility}")
+def delete_project_id(projectname: str, projectid: str, vrfname: str, facility: str, db: Session = Depends(get_db)):
+    return crud.delete_project_id(projectname, projectid, vrfname, facility, db = db)
+
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)

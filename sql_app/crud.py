@@ -204,3 +204,11 @@ def get_output_data(id : int, db: Session):
             "connect4data": sample_data[3],
         }
     }
+
+def delete_project_id(projectname, projectid, vrfname, facility, db):
+    pobj = models.Project
+    project = db.query(pobj).filter(pobj.projectid == projectid).filter(pobj.projectname == projectname).filter(pobj.vrfname == vrfname).filter(pobj.facility == facility).first()
+    proj_id = project.__dict__["id"]
+    print(proj_id)
+    ip_entry = db.query(models.Iptable).filter(models.Iptable.projectid == proj_id).first()
+    return delete_iptable(ip_entry.__dict__["id"])
