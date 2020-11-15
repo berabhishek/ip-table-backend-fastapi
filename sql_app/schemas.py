@@ -154,7 +154,7 @@ class Connect(ConnectBase):
         orm_mode = True
 
 class IptableBase(BaseModel):
-    projectid : str
+    projectid : int
     connection : str
     connect1 : int
     connect2 : int

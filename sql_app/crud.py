@@ -131,7 +131,16 @@ def create_projectipdata(db: Session, projectipdata: dict):
         else:
             connectids.append(None)
     iptable_schema = {}
-    iptable_schema['projectid'] = projectipdata['projectid']
+    proj_id = db.query(models.Project)\
+        .filter(models.Project.projectid == projectipdata['projectid'])\
+        .filter(models.Project.facility == projectipdata["facility"])\
+        .filter(models.Project.vrfname ==  projectipdata["vrfname"])\
+        .filter(models.Project.projectname == projectipdata["projectname"])\
+        .first()
+    
+    proj_id = proj_id.__dict__["id"]
+    
+    iptable_schema['projectid'] = proj_id
     iptable_schema['connection'] = projectipdata['connectivitytype']
     for i in range(4):
         if connectids[i] is not None:
@@ -146,20 +155,30 @@ def create_connect(db: Session, connect: schemas.ConnectCreate):
 def get_connect(id: int , db:Session):
     return db.query(models.Connect).filter(models.Connect.id==id).first()
 
-def get_all_connect(db: Session):
+def get_all_connect(db):
     return db.query(models.Connect).all()
 
 def get_iptable(id: int , db:Session):
     return db.query(models.Iptable).filter(models.Iptable.id==id).first()
 
 def delete_iptable(id: int, db: Session):
+    row = db.query(models.Iptable).filter(models.Iptable.id == id).first()
     status = db.query(models.Iptable).filter(models.Iptable.id == id).delete()
+    connect_ids = [
+        row.__dict__["connect1"],
+        row.__dict__["connect2"],
+        row.__dict__["connect3"],
+        row.__dict__["connect4"]
+    ]
+    for c in connect_ids:
+        if c != -1:
+            db.query(models.Connect).filter(models.Connect.id == c).delete()
     db.commit()
     return status
 
 def get_output_data(id : int, db: Session):
     iptable = db.query(models.Iptable).filter(models.Iptable.id == id).first()
-    project = db.query(models.Project).filter(models.Project.projectid == iptable.__dict__["projectid"]).first()
+    project = db.query(models.Project).filter(models.Project.id == iptable.__dict__["projectid"]).first()
     facility = project.__dict__["facility"]
     asnumber= db.query(models.Asnumber).filter(models.Asnumber.facility == facility).first()
     try:
@@ -209,6 +228,12 @@ def delete_project_id(projectname, projectid, vrfname, facility, db):
     pobj = models.Project
     project = db.query(pobj).filter(pobj.projectid == projectid).filter(pobj.projectname == projectname).filter(pobj.vrfname == vrfname).filter(pobj.facility == facility).first()
     proj_id = project.__dict__["id"]
-    print(proj_id)
     ip_entry = db.query(models.Iptable).filter(models.Iptable.projectid == proj_id).first()
-    return delete_iptable(ip_entry.__dict__["id"])
+    return delete_iptable(ip_entry.__dict__["id"], db=db)
+
+
+
+def delete_all_connections(db):
+    status = db.query(models.Connect).delete()
+    db.commit()
+    return status
