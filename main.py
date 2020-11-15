@@ -57,6 +57,10 @@ def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
 def get_city_name(country: str, db: Session = Depends(get_db)):
     return crud.get_city(country, db=db)
 
+@app.get("/formhelper/vrfname")
+def get_vrf_name(db:Session = Depends(get_db)):
+    return crud.get_vrfnames(db=db)
+
 @app.post("/formhelper/facility", response_model=schemas.Facility)
 def create_facility(facility: schemas.FacilityCreate, db: Session = Depends(get_db)):
     return crud.create_facility(db=db, facility=facility)

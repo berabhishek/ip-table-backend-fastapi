@@ -31,6 +31,7 @@ def get_free_vlan(facility: str, db: Session):
     return free_vlans
 
     details = db.query(models.Project).filter((models.Project.projectid)).filter((models.Project.projectname)).filter((models.Project.vrfname)).all()
+
 def get_vrfnames(db: Session):
     vrfnames = []
     for vrf in db.query(models.Project).all():
