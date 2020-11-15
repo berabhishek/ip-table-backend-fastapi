@@ -15,22 +15,23 @@ def  insert_into_model(db: Session, row_object, model):
 
 def get_free_vlan(facility: str, db: Session):
     min_max = db.query(models.Vlan).filter(models.Vlan.facility == facility).first()
-    vmin = min_max.__dict__["vlanmin"]
-    vmax = min_max.__dict__["vlanmax"]
+    try:
+        vmin = min_max.__dict__["vlanmin"]
+        vmax = min_max.__dict__["vlanmax"]
 
-    used = db.query(models.Connect).filter((models.Connect.vlan >= vmin)).filter((models.Connect.vlan <= vmax)).all()
-    used_vlans = []
-    for u in used:
-        used_vlans.append(u.__dict__["vlan"])
-    free_vlans = []
-    for vlan in range(vmin, vmax+1):
-        if len(free_vlans) == 4:
-            return free_vlans
-        if vlan not in used_vlans:
-            free_vlans.append(vlan)
-    return free_vlans
-
-    details = db.query(models.Project).filter((models.Project.projectid)).filter((models.Project.projectname)).filter((models.Project.vrfname)).all()
+        used = db.query(models.Connect).filter((models.Connect.vlan >= vmin)).filter((models.Connect.vlan <= vmax)).all()
+        used_vlans = []
+        for u in used:
+            used_vlans.append(u.__dict__["vlan"])
+        free_vlans = []
+        for vlan in range(vmin, vmax+1):
+            if len(free_vlans) == 4:
+                return free_vlans
+            if vlan not in used_vlans:
+                free_vlans.append(vlan)
+        return free_vlans
+    except:
+        return []
 
 def get_vrfnames(db: Session):
     vrfnames = []
