@@ -169,6 +169,9 @@ def delete_iptable(id: int, db: Session = Depends(get_db)):
 def delete_project_id(projectname: str, projectid: str, vrfname: str, facility: str, db: Session = Depends(get_db)):
     return crud.delete_project_id(projectname, projectid, vrfname, facility, db = db)
 
+@app.get("/formhelper/subnetfilter/{facility}/{entervalue}", response_model = schemas.Subnet)
+def get_subnet_filtered(facility: str, entervalue: int, db: Session = Depends(get_db)):
+    return crud.get_subnet_filtered(facility, entervalue, db=db)
 
 """Start all the internal endpoints with internals start case """
 

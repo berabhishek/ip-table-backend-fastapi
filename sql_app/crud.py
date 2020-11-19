@@ -110,9 +110,9 @@ def get_parentsubnet(facility:str , db:Session):
 def create_subnet(db: Session, subnet: schemas.SubnetCreate):
     return insert_into_model(db, subnet, models.Subnet)
 
-def get_subnet(parentsubnet:str , entervalue: str,  db:Session):
+def get_subnet(parentsubnet:str , entervalue: str, filterentervalue: int,  db:Session):
     parentsubnet += "/"+entervalue
-    return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parentsubnet).all()
+    return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parentsubnet).filter(models.Subnet.childsubnet.endswith("/"+str(filterentervalue))).all()
 
 def create_project(db: Session, project: schemas.ProjectCreate):
     return insert_into_model(db, project, models.Project)
@@ -231,6 +231,10 @@ def delete_project_id(projectname, projectid, vrfname, facility, db):
     ip_entry = db.query(models.Iptable).filter(models.Iptable.projectid == proj_id).first()
     return delete_iptable(ip_entry.__dict__["id"], db=db)
 
+def get_subnet_filtered(facility, entervalue, db):
+    parent_subnet = db.query(models.Parentsubnet).filter(models.Parentsubnet.facility==facility).first()
+    parent_subnet = parent_subnet.__dict__["parentsubnet"]
+    return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parent_subnet).filter(models.Subnet.childsubnet.endswith("/"+str(entervalue))).first()
 
 
 def delete_all_connections(db):
