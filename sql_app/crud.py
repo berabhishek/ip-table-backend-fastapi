@@ -233,9 +233,11 @@ def delete_project_id(projectname, projectid, vrfname, facility, db):
 
 def get_subnet_filtered(facility, entervalue, db):
     parent_subnet = db.query(models.Parentsubnet).filter(models.Parentsubnet.facility==facility).first()
-    parent_subnet = parent_subnet.__dict__["parentsubnet"]
-    return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parent_subnet).filter(models.Subnet.childsubnet.endswith("/"+str(entervalue))).first()
-
+    if parent_subnet is not None:
+        parent_subnet = parent_subnet.__dict__["parentsubnet"]
+        return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parent_subnet).filter(models.Subnet.childsubnet.endswith("/"+str(entervalue))).first()
+    else:
+        return []
 
 def delete_all_connections(db):
     status = db.query(models.Connect).delete()
