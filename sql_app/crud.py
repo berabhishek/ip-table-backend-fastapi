@@ -237,7 +237,7 @@ def get_subnet_filtered(facility, entervalue, db):
         parent_subnet = parent_subnet.__dict__["parentsubnet"]
         return db.query(models.Subnet).filter(models.Subnet.parentsubnet==parent_subnet).filter(models.Subnet.childsubnet.endswith("/"+str(entervalue))).first()
     else:
-        return []
+        return None
 
 def delete_all_connections(db):
     status = db.query(models.Connect).delete()
