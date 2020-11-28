@@ -173,10 +173,19 @@ def delete_project_id(projectname: str, projectid: str, vrfname: str, facility: 
 def get_subnet_filtered(facility: str, entervalue: int, db: Session = Depends(get_db)):
     return crud.get_subnet_filtered(facility, entervalue, db=db)
 
+@app.get("/formhelper/getconnect/{projectname}/{projectid}/{vrfname}/{facility}")
+def get_existing_connections(projectname: str, projectid: str, vrfname: str, facility: str, db: Session = Depends(get_db)):
+    return crud.get_existing_connections(projectname, projectid, vrfname, facility, db)
+
 """Start all the internal endpoints with internals start case """
 
+#this endpoint must be restricted to development
 @app.delete("/internals/clearconnection")
 def delete_all_connections(db: Session = Depends(get_db)):
     return crud.delete_all_connections(db=db)
+
+@app.delete("/internals/cleariptable")
+def delete_all_connections(db: Session = Depends(get_db)):
+    return crud.delete_all_iptables(db=db)
 if __name__ == "__main__":
     uvicorn.run(app, port=3030)

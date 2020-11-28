@@ -13,6 +13,15 @@ def  insert_into_model(db: Session, row_object, model):
     db.refresh(db_item)
     return db_item
 
+def get_project_id(projectname: str, projectid: str, vrfname: str, facility: str, db: Session):
+    proj_id = db.query(models.Project)\
+        .filter(models.Project.projectid == projectid)\
+        .filter(models.Project.facility == facility)\
+        .filter(models.Project.vrfname ==  vrfname)\
+        .filter(models.Project.projectname == projectname)\
+        .first()
+    return proj_id
+
 def get_free_vlan(facility: str, db: Session):
     min_max = db.query(models.Vlan).filter(models.Vlan.facility == facility).first()
     try:
@@ -118,6 +127,16 @@ def create_project(db: Session, project: schemas.ProjectCreate):
     return insert_into_model(db, project, models.Project)
 
 def create_projectipdata(db: Session, projectipdata: dict):
+    conn = get_existing_connections(
+        projectipdata["projectname"],
+        projectipdata['projectid'],
+        projectipdata["vrfname"],
+        projectipdata["facility"],
+        db
+    )
+    if conn is not None:
+        print(conn)
+        delete_iptable(str(conn["data"]["id"]), db)
     connectids = []
     for i in range(1, 5):
         istr = str(i)
@@ -131,12 +150,13 @@ def create_projectipdata(db: Session, projectipdata: dict):
         else:
             connectids.append(None)
     iptable_schema = {}
-    proj_id = db.query(models.Project)\
-        .filter(models.Project.projectid == projectipdata['projectid'])\
-        .filter(models.Project.facility == projectipdata["facility"])\
-        .filter(models.Project.vrfname ==  projectipdata["vrfname"])\
-        .filter(models.Project.projectname == projectipdata["projectname"])\
-        .first()
+    proj_id = get_project_id(
+        projectipdata["projectname"],
+        projectipdata['projectid'],
+        projectipdata["vrfname"],
+        projectipdata["facility"],
+        db
+    )
     
     proj_id = proj_id.__dict__["id"]
     
@@ -204,7 +224,12 @@ def get_output_data(id : int, db: Session):
                     inp[key] = connections[i].__dict__[key]
                 except:
                     inp[key] = ""
-                inp["subnet"], inp["entervalue"] = connections[i].__dict__["childsubnet"].split("/")
+                childsubnet = connections[i].__dict__["childsubnet"]
+                if childsubnet is not None and childsubnet != "":
+                    inp["subnet"], inp["entervalue"] = childsubnet.split("/")
+                else:
+                    inp["subnet"] = ""
+                    inp["entervalue"] = ""
         else :
             for key in keys:
                 inp[key] = ""
@@ -212,10 +237,12 @@ def get_output_data(id : int, db: Session):
 
     return {
         "data": {
+            "id": id,
             "projectname": project.__dict__["projectname"],
             "projectid": project.__dict__["projectid"],
             "asnumber": asnumber,
             "vrfname": project.__dict__["vrfname"],
+            "facility": project.__dict__["facility"],
             "connectivitytype": iptable.__dict__["connection"],
             "connect1data": sample_data[0],
             "connect2data": sample_data[1],
@@ -239,7 +266,23 @@ def get_subnet_filtered(facility, entervalue, db):
     else:
         return None
 
+def get_existing_connections(projectname: str, projectid: str, vrfname: str, facility: str, db: Session):
+    proj_id = get_project_id(projectname, projectid, vrfname, facility, db)
+    if proj_id is None:
+        return
+    proj_id = proj_id.__dict__["id"]
+    iptable = db.query(models.Iptable).filter(models.Iptable.projectid == proj_id).first()
+    if iptable is None:
+        return
+    iptable_id = iptable.__dict__["id"]
+    return get_output_data(iptable_id, db)
+
 def delete_all_connections(db):
     status = db.query(models.Connect).delete()
+    db.commit()
+    return status
+
+def delete_all_iptables(db):
+    status = db.query(models.Iptable).delete()
     db.commit()
     return status
